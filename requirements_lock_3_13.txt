@@ -6,7 +6,8 @@
 #
 # IMPORTANT: This lock file was generated from a modified requirements.txt
 # that excludes jax and jaxlib due to compilation timeouts,
-# and pins opencv-contrib-python to 4.11.0.86.
+# pins opencv-contrib-python to 4.11.0.86,
+# and pins sentencepiece to 0.2.0.
 #
 absl-py==2.3.0
     # via -r requirements.txt

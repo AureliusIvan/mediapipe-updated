@@ -227,7 +227,7 @@ class GeneratePyProtos(build_ext.build_ext):
     if not os.path.exists(output):
       sys.stderr.write('generating proto file: %s\n' % output)
       protoc_command = [
-          self._protoc, '-I.',
+          self._protoc, '-I.', '-I/usr/include',
           '--python_out=' + os.path.abspath(self.build_lib), source
       ]
       _invoke_shell_command(protoc_command)
