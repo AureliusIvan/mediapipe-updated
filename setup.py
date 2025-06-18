@@ -227,7 +227,7 @@ class GeneratePyProtos(build_ext.build_ext):
     if not os.path.exists(output):
       sys.stderr.write('generating proto file: %s\n' % output)
       protoc_command = [
-          self._protoc, '-I.', '-I/usr/include',
+          self._protoc, '-I.', '-I/usr/include', '-I/usr/local/include',
           '--python_out=' + os.path.abspath(self.build_lib), source
       ]
       _invoke_shell_command(protoc_command)
@@ -518,6 +518,16 @@ class Restore(setuptools.Command):
     os.remove(MP_ROOT_INIT_PY)
 
 
+# Parse requirements
+parsed_requirements = _parse_requirements('requirements.txt')
+
+# Conditionally remove sentencepiece for Python 3.13
+if sys.version_info.major == 3 and sys.version_info.minor == 13:
+    # Remove sentencepiece for Python 3.13
+    parsed_requirements = [req for req in parsed_requirements if not req.startswith('sentencepiece')]
+    # Optionally, print a warning to the console during setup
+    print("WARNING: 'sentencepiece' is not installed by default on Python 3.13 due to build issues. Features requiring sentencepiece may not work.", file=sys.stderr)
+
 setuptools.setup(
     name='mediapipe',
     version=__version__,
@@ -529,7 +539,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     packages=setuptools.find_packages(
         exclude=['mediapipe.examples.desktop.*', 'mediapipe.model_maker.*']),
-    install_requires=_parse_requirements('requirements.txt'),
+    install_requires=parsed_requirements,  # Use the pre-calculated variable
     cmdclass={
         'build_py': BuildPy,
         'build_modules': BuildModules,

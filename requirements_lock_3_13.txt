@@ -4,10 +4,12 @@
 #
 #    pip-compile --output-file=requirements_lock_3_13.txt requirements.txt
 #
-# IMPORTANT: This lock file was generated from a modified requirements.txt
+# IMPORTANT: This lock file was generated from a requirements.txt
 # that excludes jax and jaxlib due to compilation timeouts,
 # pins opencv-contrib-python to 4.11.0.86,
-# and pins sentencepiece to 0.2.0.
+# and pins sentencepiece to 0.2.0 (latest as of Feb 2024).
+# Note: setup.py contains logic to exclude sentencepiece during
+# installation on Python 3.13 due to its C++ build issues.
 #
 absl-py==2.3.0
     # via -r requirements.txt
