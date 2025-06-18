@@ -24,7 +24,6 @@ import shlex
 import shutil
 import subprocess
 import sys
-import google.protobuf
 
 import setuptools
 from setuptools.command import build_ext
@@ -183,7 +182,7 @@ class GeneratePyProtos(build_ext.build_ext):
       sys.exit(-1)
 
     # Determine protobuf include path
-    # import google.protobuf # Already imported at the top
+    import google.protobuf # Moved import here
     protobuf_include_path = os.path.abspath(os.path.join(google.protobuf.__path__[0], '..'))
     self._protobuf_include_path = protobuf_include_path
 
