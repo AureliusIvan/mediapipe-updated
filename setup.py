@@ -24,6 +24,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import google.protobuf
 
 import setuptools
 from setuptools.command import build_ext
@@ -181,6 +182,11 @@ class GeneratePyProtos(build_ext.build_ext):
           'protobuf compiler binary.')
       sys.exit(-1)
 
+    # Determine protobuf include path
+    # import google.protobuf # Already imported at the top
+    protobuf_include_path = os.path.abspath(os.path.join(google.protobuf.__path__[0], '..'))
+    self._protobuf_include_path = protobuf_include_path
+
     # Add __init__.py to mediapipe proto directories to make the py protos
     # indexable.
     proto_dirs = ['mediapipe/calculators'] + [
@@ -227,8 +233,11 @@ class GeneratePyProtos(build_ext.build_ext):
     if not os.path.exists(output):
       sys.stderr.write('generating proto file: %s\n' % output)
       protoc_command = [
-          self._protoc, '-I.', '-I/usr/include', '-I/usr/local/include',
-          '--python_out=' + os.path.abspath(self.build_lib), source
+          self._protoc,
+          '-I.',
+          '-I' + self._protobuf_include_path,
+          '--python_out=' + os.path.abspath(self.build_lib),
+          source
       ]
       _invoke_shell_command(protoc_command)
 
